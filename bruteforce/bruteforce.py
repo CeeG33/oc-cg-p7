@@ -20,3 +20,10 @@ action_list = [("Action-1", 20, 0.05),
                ("Action-19", 24, 0.21),
                ("Action-20", 114, 0.18)]
 
+data_source = []
+
+with open("actions.csv", "r") as data_file:
+    for data in data_file:
+        data_source.append(data)
+
+print(data_source)
