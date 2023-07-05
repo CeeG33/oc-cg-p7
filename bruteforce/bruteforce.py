@@ -22,8 +22,8 @@ action_list = [("Action-1", 20, 0.05),
 
 data_source = []
 
-with open("actions.csv", "r", encoding="utf-8") as data_file:
-    for data in data_file:
-        data_source.append(data)
+with open("actionsv2.csv", "r", encoding="utf-8") as data_file:
+    for data in data_file(1, -1):
+        data_source.append(data.strip("\n"))
 
 print(data_source)
