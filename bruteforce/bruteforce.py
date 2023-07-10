@@ -1,3 +1,4 @@
+import itertools
 
 action_list = [("Action-1", 20, 0.05), 
                ("Action-2", 30, 0.10),
@@ -22,8 +23,20 @@ action_list = [("Action-1", 20, 0.05),
 
 data_source = []
 
-with open("actions.csv", "r", encoding="utf-8") as data_file:
+with open("actionsv2.csv", "r", encoding="utf-8") as data_file:
     for data in data_file:
-        data_source.append(data)
+        data_source.append(data.strip("\n"))
 
-print(data_source)
+data_source.pop(0)
+
+print("Data brute : " + str(data_source))
+print("Premier de la liste : " + data_source[0])
+
+actions_combinations = itertools.combinations(data_source, 2)
+
+combinations_list = []
+
+for (share, benefit) in actions_combinations:
+    combinations_list.append(share + benefit)
+
+print("Test combinaisons : " + str(combinations_list))
