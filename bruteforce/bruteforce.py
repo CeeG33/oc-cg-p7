@@ -1,4 +1,5 @@
 import itertools
+import csv
 
 action_list = [("Action-1", 20, 0.05), 
                ("Action-2", 30, 0.10),
@@ -21,14 +22,24 @@ action_list = [("Action-1", 20, 0.05),
                ("Action-19", 24, 0.21),
                ("Action-20", 114, 0.18)]
 
-data_source = []
+wallet = 500
+actions_data = {}
 
-with open("actionsv2.csv", "r", encoding="utf-8") as data_file:
-    for data in data_file:
-        data_source.append(data.strip("\n"))
+with open("bruteforce/actionsv2.csv", "r", encoding="utf-8") as data_file:
+    reader = csv.DictReader(data_file)
+    for row in reader:
+        share_name = row["Actions #"]
+        cost_per_share = int(row["Coût par action (en euros)"])
+        profit = int(row["Bénéfice (après 2 ans)"])
+        actions_data[share_name] = [cost_per_share, profit]
+    
+for share_name, data in actions_data.items():
+    print(share_name, data)
 
-data_source.pop(0)
+print(actions_data["Action-1"])
 
+
+"""
 print("Data brute : " + str(data_source))
 print("Premier de la liste : " + data_source[0])
 
@@ -40,3 +51,4 @@ for (share, benefit) in actions_combinations:
     combinations_list.append(share + benefit)
 
 print("Test combinaisons : " + str(combinations_list))
+"""
