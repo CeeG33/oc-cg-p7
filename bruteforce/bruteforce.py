@@ -22,7 +22,7 @@ action_list = [("Action-1", 20, 0.05),
                ("Action-19", 24, 0.21),
                ("Action-20", 114, 0.18)]
 
-wallet = 500
+wallet_amount = 500
 actions_data = {}
 
 with open("bruteforce/actionsv2.csv", "r", encoding="utf-8") as data_file:
@@ -33,22 +33,39 @@ with open("bruteforce/actionsv2.csv", "r", encoding="utf-8") as data_file:
         profit = int(row["Bénéfice (après 2 ans)"])
         actions_data[share_name] = [cost_per_share, profit]
     
-for share_name, data in actions_data.items():
+"""for share_name, data in actions_data.items():
     print(share_name, data)
-
-print(actions_data["Action-1"])
-
-
 """
-print("Data brute : " + str(data_source))
-print("Premier de la liste : " + data_source[0])
 
-actions_combinations = itertools.combinations(data_source, 2)
+print(actions_data["Action-1"][0])
+
+actions_combinations = itertools.combinations(actions_data, 10)
 
 combinations_list = []
 
-for (share, benefit) in actions_combinations:
-    combinations_list.append(share + benefit)
+for combination in actions_combinations:
+    combinations_list.append(combination)
 
-print("Test combinaisons : " + str(combinations_list))
+combinations_cost = []
+
+
+for combination in combinations_list:
+    action_sum = 0
+    total_profit = 0
+    for action in combination:
+        share = actions_data[action][0]
+        action_sum += share
+
+        action_profit = actions_data[action][1] / 100
+        calculated_profit = share * action_profit
+        total_profit += calculated_profit
+        
+    if action_sum <= wallet_amount:
+        combinations_cost.append(("Action combination : ", combination, "Combination cost : ", action_sum, "Profit : ", round(total_profit, 2)))
+
+combinations_ranked = sorted(combinations_cost, key=lambda x: x[5], reverse=True)
+print("Meilleure combinaison : " + str(combinations_ranked[0]))
+print("Pire combinaison : " + str(combinations_ranked[-1]))
+
+"""
 """
