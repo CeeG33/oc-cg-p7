@@ -22,7 +22,7 @@ action_list = [("Action-1", 20, 0.05),
 
 data_source = []
 
-with open("bruteforce/actions.csv", "r", encoding="utf-8") as data_file:
+with open("actions.csv", "r", encoding="utf-8") as data_file:
     for data in data_file:
         data_source.append(data)
 
