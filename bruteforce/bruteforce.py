@@ -31,7 +31,13 @@ class Action:
 
     @property
     def calculated_profit(self):
-        return float(self.cost) * (float(self.profit) / 100)
+        profit_calculation = float(self.cost) * (float(self.profit) / 100)
+        rounded = round(profit_calculation, 2)
+        return rounded
+    
+    def __repr__(self):
+        return self.name
+    
 
 wallet_amount = 500
 
@@ -48,44 +54,30 @@ def populate_csv_data(path: str, target_list: list):
 
 populate_csv_data(bruteforce_data_path, bruteforce_actions_data)
 
-print(bruteforce_actions_data[0].calculated_profit)
+combinations_list = []
 
-        # share_name = row["Actions #"]
-        # cost_per_share = int(row["Coût par action (en euros)"])
-        # profit = int(row["Bénéfice (après 2 ans)"])
-        # actions_data[share_name] = [cost_per_share, profit]
-    
-"""for share_name, data in actions_data.items():
-    print(share_name, data)
-"""
+for iteration in range(1, len(bruteforce_actions_data) + 1):
+    actions_combinations = itertools.combinations(bruteforce_actions_data, iteration)
+    for combination in actions_combinations:
+        combinations_list.append(combination)
 
-# actions_combinations = itertools.combinations(actions_data, 10)
+combinations_cost = []
 
-# combinations_list = []
+for combination in combinations_list:
+    action_sum = 0
+    total_profit = 0
+    for action in combination:
+        action_sum += float(action.cost)
 
-# for combination in actions_combinations:
-#     combinations_list.append(combination)
-
-# combinations_cost = []
-
-
-# for combination in combinations_list:
-#     action_sum = 0
-#     total_profit = 0
-#     for action in combination:
-#         share = actions_data[action][0]
-#         action_sum += share
-
-#         action_profit = actions_data[action][1] / 100
-#         calculated_profit = share * action_profit
-#         total_profit += calculated_profit
+        total_profit += float(action.calculated_profit)
         
-#     if action_sum <= wallet_amount:
-#         combinations_cost.append(("Action combination : ", combination, "Combination cost : ", action_sum, "Profit : ", round(total_profit, 2)))
+    if action_sum <= wallet_amount:
+        combinations_cost.append(("Action combination : ", combination, " | Combination cost : ",  action_sum, " | Profit : ", round(total_profit, 2)))
 
-# combinations_ranked = sorted(combinations_cost, key=lambda x: x[5], reverse=True)
-# print("Meilleure combinaison : " + str(combinations_ranked[0]))
-# print("Pire combinaison : " + str(combinations_ranked[-1]))
+combinations_ranked = sorted(combinations_cost, key=lambda x: x[5], reverse=True)
+
+print("Meilleure combinaison : ", combinations_ranked[0])
+print("Pire combinaison : ", combinations_ranked[-1])
 
 
 """
