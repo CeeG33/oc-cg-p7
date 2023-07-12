@@ -4,12 +4,14 @@ from dataclasses import dataclass
 
 @dataclass(slots=True, frozen=True)
 class Action:
+    """Objet représentant une action."""
     name: str
     cost: float
     profit: float
 
     @property
     def calculated_profit(self):
+        """Calcule et affiche le profit de l'action."""
         profit_calculation = float(self.cost) * (float(self.profit) / 100)
         rounded = round(profit_calculation, 2)
         return rounded
