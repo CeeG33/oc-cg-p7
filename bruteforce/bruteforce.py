@@ -44,6 +44,7 @@ def populate_share_combinations(data_source: list, target_list: list):
 
 
 def calculate_combinations_cost_and_profit(data_source: list, target_list: list):
+    """Calcule le coût et le bénéfice généré par chaque combinaison issue de la liste existante et l'ajoute à la liste ciblée."""
     for combination in data_source:
         action_sum = 0
         total_profit = 0
@@ -57,6 +58,7 @@ def calculate_combinations_cost_and_profit(data_source: list, target_list: list)
 
 
 def get_best_result(data_source: list):
+    """Affiche la meilleure combinaison d'actions de la liste en paramètre."""
     ranked_combinations = sorted(data_source, key=lambda x: x[5], reverse=True)
     best_result = ranked_combinations[0]
 
