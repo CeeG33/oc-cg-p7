@@ -1,6 +1,8 @@
 import itertools
 import csv
 from dataclasses import dataclass
+from memory_profiler import profile
+from time import perf_counter
 
 @dataclass(slots=True, frozen=True)
 class Action:
@@ -27,7 +29,7 @@ bruteforce_actions_data = []
 combinations_list = []
 combinations_cost = []
 
-
+# @profile
 def extract_csv_data(path: str, target_list: list):
     """Extrait les données d'un fichier CSV, crée chaque objet Action en découlant et les ajoute à la liste ciblée."""
     with open(path, encoding="utf-8") as data_file:
@@ -36,7 +38,7 @@ def extract_csv_data(path: str, target_list: list):
         for row in reader:
             target_list.append(Action(row[0], row[1], row[2]))
 
-
+# @profile
 def populate_share_combinations(data_source: list, target_list: list):
     """Crée toutes les combinaisons d'action possibles selon une liste existante et les ajoute à une autre liste ciblée."""
     for iteration in range(1, len(data_source) + 1):
@@ -44,7 +46,7 @@ def populate_share_combinations(data_source: list, target_list: list):
         for combination in actions_combinations:
             target_list.append(combination)
 
-
+# @profile
 def calculate_combinations_cost_and_profit(data_source: list, target_list: list):
     """Calcule le coût et le bénéfice généré par chaque combinaison issue de la liste existante et l'ajoute à la liste ciblée."""
     for combination in data_source:
@@ -58,7 +60,7 @@ def calculate_combinations_cost_and_profit(data_source: list, target_list: list)
         if action_sum <= WALLET_AMOUNT:
             target_list.append(("Action combination : ", combination, " || Combination cost : ",  action_sum, " || Profit : ", round(total_profit, 2)))
 
-
+# @profile
 def get_best_result(data_source: list):
     """Affiche la meilleure combinaison d'actions de la liste en paramètre."""
     ranked_combinations = sorted(data_source, key=lambda x: x[5], reverse=True)
@@ -82,7 +84,30 @@ calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
 get_best_result(combinations_cost)
 
 
+
+
+# Mesure du temps d'exécution des fonctions
+
+# cProfile.run("extract_csv_data(bruteforce_data_path, bruteforce_actions_data)")
+# cProfile.run("populate_share_combinations(bruteforce_actions_data, combinations_list)")
+# cProfile.run("calculate_combinations_cost_and_profit(combinations_list, combinations_cost)")
+# cProfile.run("get_best_result(combinations_cost)")
+
+
 """
+
+def performance(func):
+    Monitor process time for a function
+    def wrapper(*args, **kwargs):
+        t1 = perf_counter()
+        result = func(*args, **kwargs)
+        t2 = perf_counter()
+        print(f"\nThe function {func.__name__} took {round(t2 - t1, 5)} s")
+        return result
+
+    return wrapper
+
+
 # action_list = [("Action-1", 20, 0.05), 
 #                ("Action-2", 30, 0.10),
 #                ("Action-3", 50, 0.15),
@@ -106,16 +131,6 @@ get_best_result(combinations_cost)
 
 
 
-def performance(func):
-    Monitor process time for a function
 
-    def wrapper(*args, **kawrgs):
-        t1 = perf_counter()
-        result = func(*args, **kawrgs)
-        t2 = perf_counter()
-        print(f"\nThe function {func.__name__} took {round(t2 - t1, 5)} s")
-        return result
-
-    return wrapper
 
 """
