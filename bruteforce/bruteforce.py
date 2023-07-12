@@ -2,6 +2,83 @@ import itertools
 import csv
 from dataclasses import dataclass
 
+@dataclass(slots=True, frozen=True)
+class Action:
+    name: str
+    cost: float
+    profit: float
+
+    @property
+    def calculated_profit(self):
+        profit_calculation = float(self.cost) * (float(self.profit) / 100)
+        rounded = round(profit_calculation, 2)
+        return rounded
+    
+    def __repr__(self):
+        return self.name
+    
+
+WALLET_AMOUNT = 500
+
+bruteforce_data_path = "bruteforce/actionsv2.csv"
+bruteforce_actions_data = []
+combinations_list = []
+combinations_cost = []
+
+
+def extract_csv_data(path: str, target_list: list):
+    """Extrait les données d'un fichier CSV, crée chaque objet Action en découlant et les ajoute à la liste ciblée."""
+    with open(path, encoding="utf-8") as data_file:
+        reader = csv.reader(data_file)
+        next(reader)
+        for row in reader:
+            target_list.append(Action(row[0], row[1], row[2]))
+
+
+def populate_share_combinations(data_source: list, target_list: list):
+    """Crée toutes les combinaisons d'action possibles selon une liste existante et les ajoute à une autre liste ciblée."""
+    for iteration in range(1, len(data_source) + 1):
+        actions_combinations = itertools.combinations(data_source, iteration)
+        for combination in actions_combinations:
+            target_list.append(combination)
+
+
+def calculate_combinations_cost_and_profit(data_source: list, target_list: list):
+    for combination in data_source:
+        action_sum = 0
+        total_profit = 0
+    
+        for action in combination:
+            action_sum += float(action.cost)
+            total_profit += float(action.calculated_profit)
+            
+        if action_sum <= WALLET_AMOUNT:
+            target_list.append(("Action combination : ", combination, " || Combination cost : ",  action_sum, " || Profit : ", round(total_profit, 2)))
+
+
+def get_best_result(data_source: list):
+    ranked_combinations = sorted(data_source, key=lambda x: x[5], reverse=True)
+    best_result = ranked_combinations[0]
+
+    best_result_formatted = "{}{}{}{}{}{}".format(
+        best_result[0],
+        best_result[1],
+        best_result[2],
+        best_result[3],
+        best_result[4],
+        best_result[5],
+    )
+
+    print("Best combination : ", best_result_formatted)
+
+
+extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
+populate_share_combinations(bruteforce_actions_data, combinations_list)
+calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
+get_best_result(combinations_cost)
+
+
+"""
 # action_list = [("Action-1", 20, 0.05), 
 #                ("Action-2", 30, 0.10),
 #                ("Action-3", 50, 0.15),
@@ -23,64 +100,7 @@ from dataclasses import dataclass
 #                ("Action-19", 24, 0.21),
 #                ("Action-20", 114, 0.18)]
 
-@dataclass(slots=True, frozen=True)
-class Action:
-    name: str
-    cost: float
-    profit: float
 
-    @property
-    def calculated_profit(self):
-        profit_calculation = float(self.cost) * (float(self.profit) / 100)
-        rounded = round(profit_calculation, 2)
-        return rounded
-    
-    def __repr__(self):
-        return self.name
-    
-
-wallet_amount = 500
-
-bruteforce_actions_data = []
-
-bruteforce_data_path = "bruteforce/actionsv2.csv"
-
-def populate_csv_data(path: str, target_list: list):
-    with open(path, encoding="utf-8") as data_file:
-        reader = csv.reader(data_file)
-        next(reader)
-        for row in reader:
-            target_list.append(Action(row[0], row[1], row[2]))
-
-populate_csv_data(bruteforce_data_path, bruteforce_actions_data)
-
-combinations_list = []
-
-for iteration in range(1, len(bruteforce_actions_data) + 1):
-    actions_combinations = itertools.combinations(bruteforce_actions_data, iteration)
-    for combination in actions_combinations:
-        combinations_list.append(combination)
-
-combinations_cost = []
-
-for combination in combinations_list:
-    action_sum = 0
-    total_profit = 0
-    for action in combination:
-        action_sum += float(action.cost)
-
-        total_profit += float(action.calculated_profit)
-        
-    if action_sum <= wallet_amount:
-        combinations_cost.append(("Action combination : ", combination, " | Combination cost : ",  action_sum, " | Profit : ", round(total_profit, 2)))
-
-combinations_ranked = sorted(combinations_cost, key=lambda x: x[5], reverse=True)
-
-print("Meilleure combinaison : ", combinations_ranked[0])
-print("Pire combinaison : ", combinations_ranked[-1])
-
-
-"""
 
 def performance(func):
     Monitor process time for a function
