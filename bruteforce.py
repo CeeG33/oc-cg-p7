@@ -24,7 +24,7 @@ class Action:
 
 WALLET_AMOUNT = 500
 
-bruteforce_data_path = "bruteforce/actionsv2.csv"
+bruteforce_data_path = "actionsv2.csv"
 bruteforce_actions_data = []
 combinations_list = []
 combinations_cost = []
@@ -78,10 +78,15 @@ def get_best_result(data_source: list):
     print("Best combination : ", best_result_formatted)
 
 
-extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
-populate_share_combinations(bruteforce_actions_data, combinations_list)
-calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
-get_best_result(combinations_cost)
+
+# Fonctions principales
+
+if __name__ == "__main__":
+    extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
+    populate_share_combinations(bruteforce_actions_data, combinations_list)
+    calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
+    get_best_result(combinations_cost)
+
 
 
 
