@@ -24,7 +24,7 @@ class Action:
 
 WALLET_AMOUNT = 500
 
-bruteforce_data_path = "actionsv2.csv"
+bruteforce_data_path = "actions.csv"
 bruteforce_actions_data = []
 combinations_list = []
 combinations_cost = []

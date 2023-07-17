@@ -5,7 +5,7 @@ import bruteforce
 
 WALLET_AMOUNT = 500
 
-bruteforce_data_path = "actionsv2.csv"
+bruteforce_data_path = "actions.csv"
 bruteforce_actions_data = []
 
 
@@ -27,7 +27,7 @@ actions_data_sorted = sorted(bruteforce_actions_data, key=lambda data:data.calcu
 resultat = []
 
 for action in actions_data_sorted:
-    if (WALLET_AMOUNT - float(action.cost)) >= 0:
+    if (WALLET_AMOUNT - float(action.cost)) >= 0 and float(action.cost) > 0:
         resultat.append(action)
         WALLET_AMOUNT = WALLET_AMOUNT - float(action.cost)
 
