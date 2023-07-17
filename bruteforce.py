@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from memory_profiler import profile
 from time import perf_counter
 
+
 @dataclass(slots=True, frozen=True)
 class Action:
     """Objet représentant une action."""
@@ -21,8 +22,11 @@ class Action:
     def __repr__(self):
         return self.name
     
+    def __lt__(self, other):
+        return self.calculated_profit < other.calculated_profit
+    
 
-WALLET_AMOUNT = 500
+wallet_amount = 500
 
 bruteforce_data_path = "actions.csv"
 bruteforce_actions_data = []
@@ -57,7 +61,7 @@ def calculate_combinations_cost_and_profit(data_source: list, target_list: list)
             action_sum += float(action.cost)
             total_profit += float(action.calculated_profit)
             
-        if action_sum <= WALLET_AMOUNT:
+        if action_sum <= wallet_amount:
             target_list.append(("Action combination : ", combination, " || Combination cost : ",  action_sum, " || Profit : ", round(total_profit, 2)))
 
 # @profile
@@ -77,65 +81,27 @@ def get_best_result(data_source: list):
 
     print("Best combination : ", best_result_formatted)
 
-
-
-# Fonctions principales
-
-if __name__ == "__main__":
-    extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
-    populate_share_combinations(bruteforce_actions_data, combinations_list)
-    calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
-    get_best_result(combinations_cost)
-
-
-
-
-
-# Mesure du temps d'exécution des fonctions
-
-# cProfile.run("extract_csv_data(bruteforce_data_path, bruteforce_actions_data)")
-# cProfile.run("populate_share_combinations(bruteforce_actions_data, combinations_list)")
-# cProfile.run("calculate_combinations_cost_and_profit(combinations_list, combinations_cost)")
-# cProfile.run("get_best_result(combinations_cost)")
-
-
-"""
-
 def performance(func):
-    Monitor process time for a function
+    """Décorateur qui calcule le temps d'exécution d'une fonction."""
     def wrapper(*args, **kwargs):
         t1 = perf_counter()
         result = func(*args, **kwargs)
         t2 = perf_counter()
-        print(f"\nThe function {func.__name__} took {round(t2 - t1, 5)} s")
+        print(f"La fonction '{func.__name__}' s'est exécutée en {round(t2 - t1, 5)} s")
         return result
 
     return wrapper
 
 
-# action_list = [("Action-1", 20, 0.05), 
-#                ("Action-2", 30, 0.10),
-#                ("Action-3", 50, 0.15),
-#                ("Action-4", 70, 0.20),
-#                ("Action-5", 60, 0.17),
-#                ("Action-6", 80, 0.25),
-#                ("Action-7", 22, 0.07),
-#                ("Action-8", 26, 0.11),
-#                ("Action-9", 48, 0.13),
-#                ("Action-10", 34, 0.27),
-#                ("Action-11", 42, 0.17),
-#                ("Action-12", 110, 0.09),
-#                ("Action-13", 38, 0.23),
-#                ("Action-14", 14, 0.01),
-#                ("Action-15", 18, 0.03),
-#                ("Action-16", 8, 0.08),
-#                ("Action-17", 4, 0.12),
-#                ("Action-18", 10, 0.14),
-#                ("Action-19", 24, 0.21),
-#                ("Action-20", 114, 0.18)]
+# Fonction principale
 
+# @performance
+# @profile
+def main():
+    extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
+    populate_share_combinations(bruteforce_actions_data, combinations_list)
+    calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
+    get_best_result(combinations_cost)
 
-
-
-
-"""
+if __name__ == "__main__":
+    main()
