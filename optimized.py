@@ -40,8 +40,3 @@ def main():
     calculate_action_cost_and_profit(resultat)
 
 main()
-
-
-
-
-
