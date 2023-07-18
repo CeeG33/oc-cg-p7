@@ -1,37 +1,41 @@
 import bruteforce
 
-bruteforce_data_path = "actions.csv"
-bruteforce_actions_data = []
+# Fichier de données source.
+data_path = "dataset2_Python+P7.csv"
 
 def calculate_action_cost_and_profit(data: list):
+    """Calcule le coût et le bénéfice généré par la combinaison cible."""
     action_sum = 0
     total_profit = 0
     action_list = []
+    
     for action in data:
         action_sum += float(action.cost)
         total_profit += float(action.calculated_profit)
         action_list.append(action)
 
-    return print(f"Combination : {action_list} || Combination cost : {action_sum} || Profit : {round(total_profit, 2)}")
+    return print(f"Combination : {action_list} || Combination cost : {round(action_sum, 2)} || Profit : {round(total_profit, 2)}")
 
 
 # Fonction principale
 
+# Décommenter la ligne ci-dessous pour mesurer le temps d'exécution.
 # @bruteforce.performance
+
+# Décommenter la ligne ci-dessous pour mesurer l'allocation mémoire.
 # @bruteforce.profile
 def main():
-    WALLET_AMOUNT = 500
-    bruteforce.extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
-    actions_data_sorted = sorted(bruteforce_actions_data, reverse=True)
-
-    print(actions_data_sorted)
+    # Définition du montant du porte-feuille client.
+    wallet_amount = 500
+    csv_data = bruteforce.extract_csv_data(data_path)
+    actions_data_sorted = sorted(csv_data, reverse=True)
 
     resultat = []
 
     for action in actions_data_sorted:
-        if (WALLET_AMOUNT - float(action.cost)) >= 0 and float(action.cost) > 0:
+        if (wallet_amount - float(action.cost)) >= 0:
             resultat.append(action)
-            WALLET_AMOUNT = WALLET_AMOUNT - float(action.cost)
+            wallet_amount = wallet_amount - float(action.cost)
 
     calculate_action_cost_and_profit(resultat)
 

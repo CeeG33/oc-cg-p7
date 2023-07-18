@@ -23,36 +23,45 @@ class Action:
         return self.name
     
     def __lt__(self, other):
-        return self.calculated_profit < other.calculated_profit
+        return self.profit < other.profit
     
-
+# Définition du montant du porte-feuille client.
 wallet_amount = 500
 
+# Fichier de données source.
 bruteforce_data_path = "actions.csv"
-bruteforce_actions_data = []
-combinations_list = []
-combinations_cost = []
 
-# @profile
-def extract_csv_data(path: str, target_list: list):
-    """Extrait les données d'un fichier CSV, crée chaque objet Action en découlant et les ajoute à la liste ciblée."""
+
+def extract_csv_data(path: str):
+    """Extrait les données d'un fichier CSV, crée chaque objet Action en découlant."""
+    bruteforce_actions_data = []
+    
     with open(path, encoding="utf-8") as data_file:
         reader = csv.reader(data_file)
         next(reader)
         for row in reader:
-            target_list.append(Action(row[0], row[1], row[2]))
+            if float(row[1]) > 0:
+                bruteforce_actions_data.append(Action(row[0], float(row[1]), float(row[2])))
+    
+    return bruteforce_actions_data
 
-# @profile
-def populate_share_combinations(data_source: list, target_list: list):
-    """Crée toutes les combinaisons d'action possibles selon une liste existante et les ajoute à une autre liste ciblée."""
+
+def populate_share_combinations(data_source: list):
+    """Crée toutes les combinaisons d'action possibles selon une liste existante."""
+    combinations_list = []
+
     for iteration in range(1, len(data_source) + 1):
         actions_combinations = itertools.combinations(data_source, iteration)
         for combination in actions_combinations:
-            target_list.append(combination)
+            combinations_list.append(combination)
 
-# @profile
-def calculate_combinations_cost_and_profit(data_source: list, target_list: list):
-    """Calcule le coût et le bénéfice généré par chaque combinaison issue de la liste existante et l'ajoute à la liste ciblée."""
+    return combinations_list
+
+
+def calculate_combinations_cost_and_profit(data_source: list):
+    """Calcule le coût et le bénéfice généré par chaque combinaison issue de la liste existante."""
+    combinations_cost = []
+
     for combination in data_source:
         action_sum = 0
         total_profit = 0
@@ -62,9 +71,11 @@ def calculate_combinations_cost_and_profit(data_source: list, target_list: list)
             total_profit += float(action.calculated_profit)
             
         if action_sum <= wallet_amount:
-            target_list.append(("Action combination : ", combination, " || Combination cost : ",  action_sum, " || Profit : ", round(total_profit, 2)))
+            combinations_cost.append(("Action combination : ", combination, " || Combination cost : ",  action_sum, " || Profit : ", round(total_profit, 2)))
 
-# @profile
+    return combinations_cost
+
+
 def get_best_result(data_source: list):
     """Affiche la meilleure combinaison d'actions de la liste en paramètre."""
     ranked_combinations = sorted(data_source, key=lambda x: x[5], reverse=True)
@@ -81,6 +92,7 @@ def get_best_result(data_source: list):
 
     print("Best combination : ", best_result_formatted)
 
+
 def performance(func):
     """Décorateur qui calcule le temps d'exécution d'une fonction."""
     def wrapper(*args, **kwargs):
@@ -95,12 +107,15 @@ def performance(func):
 
 # Fonction principale
 
+# Décommenter la ligne ci-dessous pour mesurer le temps d'exécution.
 # @performance
+
+# Décommenter la ligne ci-dessous pour mesurer l'allocation mémoire.
 # @profile
 def main():
-    extract_csv_data(bruteforce_data_path, bruteforce_actions_data)
-    populate_share_combinations(bruteforce_actions_data, combinations_list)
-    calculate_combinations_cost_and_profit(combinations_list, combinations_cost)
+    csv_data = extract_csv_data(bruteforce_data_path)
+    combinations = populate_share_combinations(csv_data)
+    combinations_cost = calculate_combinations_cost_and_profit(combinations)
     get_best_result(combinations_cost)
 
 if __name__ == "__main__":
